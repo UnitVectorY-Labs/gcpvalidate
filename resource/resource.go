@@ -54,8 +54,8 @@ func IsValidVertexModelResourceName(path string) bool {
 		if !location.IsValidLocation(loc) {
 			return false
 		}
-		// Model ID must be non-empty, contain no slashes, and have no whitespace
-		if modelID == "" || !internal.HasTrimmedWhitespace(modelID) || strings.ContainsAny(modelID, "/\t\n\r") {
+		// Model ID must be valid path segment
+		if !internal.IsValidPathSegment(modelID) {
 			return false
 		}
 
@@ -79,12 +79,12 @@ func IsValidVertexModelResourceName(path string) bool {
 		if !location.IsValidLocation(loc) {
 			return false
 		}
-		// Publisher must be non-empty, contain no slashes, and have no whitespace
-		if publisher == "" || !internal.HasTrimmedWhitespace(publisher) || strings.ContainsAny(publisher, "/\t\n\r") {
+		// Publisher must be valid path segment
+		if !internal.IsValidPathSegment(publisher) {
 			return false
 		}
-		// Model ID must be non-empty, contain no slashes, and have no whitespace
-		if modelID == "" || !internal.HasTrimmedWhitespace(modelID) || strings.ContainsAny(modelID, "/\t\n\r") {
+		// Model ID must be valid path segment
+		if !internal.IsValidPathSegment(modelID) {
 			return false
 		}
 

@@ -8,3 +8,9 @@ import "strings"
 func HasTrimmedWhitespace(s string) bool {
 	return strings.TrimSpace(s) == s
 }
+
+// IsValidPathSegment checks if a string is valid for use in a resource path segment.
+// It must be non-empty, have no whitespace, and contain no slashes.
+func IsValidPathSegment(s string) bool {
+	return s != "" && HasTrimmedWhitespace(s) && !strings.Contains(s, "/")
+}
