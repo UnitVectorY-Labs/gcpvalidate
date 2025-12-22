@@ -2,6 +2,7 @@
 package testutil
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -48,8 +49,9 @@ func RunValidatorTests(t *testing.T, yamlFile string, validator func(string) boo
 	testData := LoadTestData(t, yamlFile)
 
 	// Test valid cases
-	for _, testCase := range testData.Valid {
-		t.Run("valid:"+testCase, func(t *testing.T) {
+	for i, testCase := range testData.Valid {
+		name := fmt.Sprintf("valid/%d", i)
+		t.Run(name, func(t *testing.T) {
 			if !validator(testCase) {
 				t.Errorf("Expected %q to be valid, but got false", testCase)
 			}
@@ -57,8 +59,9 @@ func RunValidatorTests(t *testing.T, yamlFile string, validator func(string) boo
 	}
 
 	// Test invalid cases
-	for _, testCase := range testData.Invalid {
-		t.Run("invalid:"+testCase, func(t *testing.T) {
+	for i, testCase := range testData.Invalid {
+		name := fmt.Sprintf("invalid/%d", i)
+		t.Run(name, func(t *testing.T) {
 			if validator(testCase) {
 				t.Errorf("Expected %q to be invalid, but got true", testCase)
 			}

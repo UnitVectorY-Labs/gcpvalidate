@@ -4,6 +4,7 @@ package resource
 import (
 	"strings"
 
+	"github.com/UnitVectorY-Labs/gcpvalidate/internal"
 	"github.com/UnitVectorY-Labs/gcpvalidate/location"
 	"github.com/UnitVectorY-Labs/gcpvalidate/project"
 )
@@ -28,7 +29,7 @@ func IsValidVertexModelResourceName(path string) bool {
 	}
 
 	// Check for leading/trailing whitespace
-	if path[0] == ' ' || path[len(path)-1] == ' ' {
+	if !internal.HasTrimmedWhitespace(path) {
 		return false
 	}
 
@@ -53,7 +54,8 @@ func IsValidVertexModelResourceName(path string) bool {
 		if !location.IsValidLocation(loc) {
 			return false
 		}
-		if modelID == "" || strings.Contains(modelID, "/") {
+		// Model ID must be non-empty, contain no slashes, and have no whitespace
+		if modelID == "" || !internal.HasTrimmedWhitespace(modelID) || strings.ContainsAny(modelID, "/\t\n\r") {
 			return false
 		}
 
@@ -77,10 +79,12 @@ func IsValidVertexModelResourceName(path string) bool {
 		if !location.IsValidLocation(loc) {
 			return false
 		}
-		if publisher == "" || strings.Contains(publisher, "/") {
+		// Publisher must be non-empty, contain no slashes, and have no whitespace
+		if publisher == "" || !internal.HasTrimmedWhitespace(publisher) || strings.ContainsAny(publisher, "/\t\n\r") {
 			return false
 		}
-		if modelID == "" || strings.Contains(modelID, "/") {
+		// Model ID must be non-empty, contain no slashes, and have no whitespace
+		if modelID == "" || !internal.HasTrimmedWhitespace(modelID) || strings.ContainsAny(modelID, "/\t\n\r") {
 			return false
 		}
 
@@ -107,7 +111,7 @@ func IsValidProjectLocationParent(parent string) bool {
 	}
 
 	// Check for leading/trailing whitespace
-	if parent[0] == ' ' || parent[len(parent)-1] == ' ' {
+	if !internal.HasTrimmedWhitespace(parent) {
 		return false
 	}
 

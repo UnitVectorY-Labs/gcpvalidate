@@ -1,7 +1,11 @@
 // Package project provides validators for Google Cloud Project identifiers.
 package project
 
-import "regexp"
+import (
+	"regexp"
+
+	"github.com/UnitVectorY-Labs/gcpvalidate/internal"
+)
 
 // Compiled regexes for project validation
 var (
@@ -23,7 +27,7 @@ func IsValidProjectID(id string) bool {
 	}
 
 	// Check for leading/trailing whitespace
-	if len(id) > 0 && (id[0] == ' ' || id[len(id)-1] == ' ') {
+	if !internal.HasTrimmedWhitespace(id) {
 		return false
 	}
 
@@ -53,7 +57,7 @@ func IsValidProjectName(name string) bool {
 	}
 
 	// Check for leading/trailing whitespace
-	if len(name) > 0 && (name[0] == ' ' || name[len(name)-1] == ' ') {
+	if !internal.HasTrimmedWhitespace(name) {
 		return false
 	}
 

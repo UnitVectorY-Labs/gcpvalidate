@@ -18,4 +18,7 @@ invalid:
   - ""
   - " projects/my-project/locations/us-central1/models/12345"
   - "projects/my-project/locations/us-central1/models/12345 "
+  - "projects/my-project/locations/us-central1/models/12345\n"
+  - "projects/my-project/locations/us-central1/models/12345\t"
+  - "projects/my-project/locations/us-central1/publishers/google\n/models/gemini"
   - projects/my-project/locations/us-central1/models/test/model

@@ -1,7 +1,11 @@
 // Package vertexai provides validators for Google Cloud Vertex AI identifiers.
 package vertexai
 
-import "regexp"
+import (
+	"regexp"
+
+	"github.com/UnitVectorY-Labs/gcpvalidate/internal"
+)
 
 // Compiled regex for Vertex AI name validation
 var (
@@ -24,13 +28,13 @@ func IsValidVertexModelName(name string) bool {
 		return false
 	}
 
-	// Check length first
-	if len(name) > 128 {
+	// Check for leading/trailing whitespace
+	if !internal.HasTrimmedWhitespace(name) {
 		return false
 	}
 
-	// Check for leading/trailing whitespace
-	if name[0] == ' ' || name[len(name)-1] == ' ' {
+	// Check length first
+	if len(name) > 128 {
 		return false
 	}
 

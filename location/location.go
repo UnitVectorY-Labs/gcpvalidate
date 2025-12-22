@@ -1,7 +1,11 @@
 // Package location provides validators for Google Cloud location identifiers.
 package location
 
-import "regexp"
+import (
+	"regexp"
+
+	"github.com/UnitVectorY-Labs/gcpvalidate/internal"
+)
 
 // Compiled regexes for location validation
 var (
@@ -26,13 +30,13 @@ func IsValidRegion(region string) bool {
 		return false
 	}
 
-	// Check length limit (reasonable maximum)
-	if len(region) > 100 {
+	// Check for leading/trailing whitespace
+	if !internal.HasTrimmedWhitespace(region) {
 		return false
 	}
 
-	// Check for leading/trailing whitespace
-	if region[0] == ' ' || region[len(region)-1] == ' ' {
+	// Check length limit (reasonable maximum)
+	if len(region) > 100 {
 		return false
 	}
 
@@ -53,13 +57,13 @@ func IsValidZone(zone string) bool {
 		return false
 	}
 
-	// Check length limit (reasonable maximum)
-	if len(zone) > 100 {
+	// Check for leading/trailing whitespace
+	if !internal.HasTrimmedWhitespace(zone) {
 		return false
 	}
 
-	// Check for leading/trailing whitespace
-	if zone[0] == ' ' || zone[len(zone)-1] == ' ' {
+	// Check length limit (reasonable maximum)
+	if len(zone) > 100 {
 		return false
 	}
 

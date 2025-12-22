@@ -4,6 +4,8 @@ package storage
 import (
 	"regexp"
 	"strings"
+
+	"github.com/UnitVectorY-Labs/gcpvalidate/internal"
 )
 
 // Compiled regex for bucket name validation
@@ -31,7 +33,7 @@ func IsValidBucketName(name string) bool {
 	}
 
 	// Check for leading/trailing whitespace
-	if name[0] == ' ' || name[len(name)-1] == ' ' {
+	if !internal.HasTrimmedWhitespace(name) {
 		return false
 	}
 
