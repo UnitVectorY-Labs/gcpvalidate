@@ -13,16 +13,16 @@ Client-side syntactic validation for Google Cloud resource identifiers. Validate
 
 | Package | Validator | Description |
 |---------|-----------|-------------|
-| [project](project.md) | `IsValidProjectID` | GCP project identifier (6-30 chars, lowercase, starts with letter) |
-| [project](project.md) | `IsValidProjectName` | GCP project display name (4-30 chars, letters/numbers/spaces/punctuation) |
-| [location](location.md) | `IsValidRegion` | Region identifier (e.g., `us-central1`, `europe-west4`) |
-| [location](location.md) | `IsValidZone` | Zone identifier (e.g., `us-central1-a`) |
-| [location](location.md) | `IsValidLocation` | Location identifier (region, zone, or `global`) |
-| [storage](storage.md) | `IsValidBucketName` | Cloud Storage bucket name (3-63 chars, lowercase, alphanumeric with dots/dashes/underscores) |
-| [vertexai](vertexai.md) | `IsValidVertexModelName` | Vertex AI model display name (max 128 chars, starts with letter) |
-| [vertexai](vertexai.md) | `IsValidVertexEndpointName` | Vertex AI endpoint display name (max 128 chars, starts with letter) |
-| [resource](resource.md) | `IsValidVertexModelResourceName` | Full Vertex AI model resource path |
-| [resource](resource.md) | `IsValidProjectLocationParent` | Project/location parent path (`projects/{project}/locations/{location}`) |
+| [project](project.md) | `IsValidProjectID` | Validates GCP project identifier |
+| [project](project.md) | `IsValidProjectName` | Validates GCP project display name |
+| [location](location.md) | `IsValidRegion` | Validates region identifier |
+| [location](location.md) | `IsValidZone` | Validates zone identifier |
+| [location](location.md) | `IsValidLocation` | Validates location identifier (region, zone, or global) |
+| [storage](storage.md) | `IsValidBucketName` | Validates Cloud Storage bucket name |
+| [vertexai](vertexai.md) | `IsValidVertexModelName` | Validates Vertex AI model display name |
+| [vertexai](vertexai.md) | `IsValidVertexEndpointName` | Validates Vertex AI endpoint display name |
+| [resource](resource.md) | `IsValidVertexModelResourceName` | Validates full Vertex AI model resource path |
+| [resource](resource.md) | `IsValidProjectLocationParent` | Validates project/location parent path |
 
 ## Important Disclaimers
 

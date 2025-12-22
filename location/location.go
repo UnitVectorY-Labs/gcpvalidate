@@ -21,6 +21,7 @@ var (
 //   - Be non-empty
 //   - Contain only lowercase letters, digits, and hyphens
 //   - Match the general region code style (e.g., us-central1, europe-west4)
+//   - Be no longer than 100 characters (internal safety bound)
 //
 // Note: This validates syntax only, not whether the region currently exists
 // or is available for a given service.
@@ -35,7 +36,7 @@ func IsValidRegion(region string) bool {
 		return false
 	}
 
-	// Check length limit (reasonable maximum)
+	// Check length limit (internal safety bound)
 	if len(region) > 100 {
 		return false
 	}
@@ -49,6 +50,7 @@ func IsValidRegion(region string) bool {
 // A valid zone must:
 //   - Be non-empty
 //   - Follow the zone naming pattern: <region>-<zone-letter> (e.g., us-central1-a)
+//   - Be no longer than 100 characters (internal safety bound)
 //
 // Note: This validates syntax only, not whether the zone currently exists.
 func IsValidZone(zone string) bool {
@@ -62,7 +64,7 @@ func IsValidZone(zone string) bool {
 		return false
 	}
 
-	// Check length limit (reasonable maximum)
+	// Check length limit (internal safety bound)
 	if len(zone) > 100 {
 		return false
 	}

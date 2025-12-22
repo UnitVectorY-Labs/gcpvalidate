@@ -22,3 +22,6 @@ invalid:
   - "projects/my-project/locations/us-central1/models/12345\t"
   - "projects/my-project/locations/us-central1/publishers/google\n/models/gemini"
   - projects/my-project/locations/us-central1/models/test/model
+  - projects/my-project/locations/us-central1/models/a b
+  - projects/my-project/locations/us-central1/publishers/a b/models/gemini
+  - projects/my-project/locations/us-central1/publishers/google/models/my model

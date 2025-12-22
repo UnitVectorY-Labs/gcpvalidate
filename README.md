@@ -90,8 +90,8 @@ No error messages means:
 ## Security
 
 - Length bounds enforced before regex evaluation
-- No unbounded quantifiers (all patterns use bounded repetition like `{1,3}`)
-- Anchored regex patterns (`^...$`)
+- Anchored regex patterns (`^...$`) with explicit length checks
+- Uses Go's RE2 engine which avoids catastrophic backtracking
 - Whitespace (including tabs, newlines) rejected unless explicitly allowed
 
 ## Contributing
