@@ -1,6 +1,11 @@
-# project package validation rules
+---
+layout: default
+title: Project
+nav_order: 2
+permalink: /project
+---
 
-[← Back to index](index.md)
+# Project
 
 The `project` package validates Google Cloud Project identifiers.
 

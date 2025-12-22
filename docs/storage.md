@@ -1,6 +1,11 @@
-# storage package validation rules
+---
+layout: default
+title: Storage
+nav_order: 2
+permalink: /storage
+---
 
-[← Back to index](index.md)
+# Storage
 
 The `storage` package validates Google Cloud Storage identifiers.
 

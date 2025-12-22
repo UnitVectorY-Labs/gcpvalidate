@@ -24,7 +24,7 @@ func IsValidVertexModelName(name string) bool {
 		return false
 	}
 
-	// Check length first (security requirement)
+	// Check length first
 	if len(name) > 128 {
 		return false
 	}

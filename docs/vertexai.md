@@ -1,6 +1,11 @@
-# vertexai package validation rules
+---
+layout: default
+title: Vertex AI
+nav_order: 2
+permalink: /vertexai
+---
 
-[← Back to index](index.md)
+# Vertex AI
 
 The `vertexai` package validates Vertex AI resource identifiers.
 

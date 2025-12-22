@@ -1,6 +1,11 @@
-# resource package validation rules
+---
+layout: default
+title: Resource
+nav_order: 2
+permalink: /resource
+---
 
-[← Back to index](index.md)
+# Resource
 
 The `resource` package validates the structure of common Google Cloud resource paths. It validates required keywords and segment positions and delegates segment validation to other packages.
 

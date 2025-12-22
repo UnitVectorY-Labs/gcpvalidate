@@ -17,7 +17,7 @@ var (
 //   - Contain only ASCII lowercase letters, digits, and hyphens
 //   - Not end with a hyphen
 func IsValidProjectID(id string) bool {
-	// Check length first (security requirement)
+	// Check length first
 	if len(id) < 6 || len(id) > 30 {
 		return false
 	}
@@ -47,7 +47,7 @@ func IsValidProjectID(id string) bool {
 //   - Be 4 to 30 characters long
 //   - Contain only letters, numbers, single quotes, hyphens, spaces, or exclamation points
 func IsValidProjectName(name string) bool {
-	// Check length first (security requirement)
+	// Check length first
 	if len(name) < 4 || len(name) > 30 {
 		return false
 	}

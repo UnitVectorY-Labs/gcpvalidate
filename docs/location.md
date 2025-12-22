@@ -1,6 +1,11 @@
-# location package validation rules
+---
+layout: default
+title: Location
+nav_order: 2
+permalink: /location
+---
 
-[← Back to index](index.md)
+# Location
 
 The `location` package validates Google Cloud location identifiers.
 
