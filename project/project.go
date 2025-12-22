@@ -3,8 +3,10 @@ package project
 
 import (
 	"regexp"
+	"strings"
 
 	"github.com/UnitVectorY-Labs/gcpvalidate/internal"
+	"github.com/UnitVectorY-Labs/gcpvalidate/location"
 )
 
 // Compiled regexes for project validation
@@ -63,4 +65,52 @@ func IsValidProjectName(name string) bool {
 
 	// Validate format with regex
 	return projectNameRegex.MatchString(name)
+}
+
+// IsValidProjectLocationParent validates a project/location parent path.
+//
+// Accepted structure:
+//   - projects/{project}/locations/{location}
+//
+// Segment rules:
+//   - {project} must satisfy IsValidProjectID
+//   - {location} must satisfy location.IsValidLocation
+//
+// Note: This validates structure only, not whether the resource exists.
+func IsValidProjectLocationParent(parent string) bool {
+	// Empty string is invalid
+	if parent == "" {
+		return false
+	}
+
+	// Check for leading/trailing whitespace
+	if !internal.HasTrimmedWhitespace(parent) {
+		return false
+	}
+
+	// Split the path into segments
+	segments := strings.Split(parent, "/")
+
+	// Must have exactly 4 segments
+	if len(segments) != 4 {
+		return false
+	}
+
+	// Check the structure
+	if segments[0] != "projects" || segments[2] != "locations" {
+		return false
+	}
+
+	projectID := segments[1]
+	loc := segments[3]
+
+	// Validate each segment
+	if !IsValidProjectID(projectID) {
+		return false
+	}
+	if !location.IsValidLocation(loc) {
+		return false
+	}
+
+	return true
 }

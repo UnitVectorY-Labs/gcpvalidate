@@ -3,8 +3,11 @@ package vertexai
 
 import (
 	"regexp"
+	"strings"
 
 	"github.com/UnitVectorY-Labs/gcpvalidate/internal"
+	"github.com/UnitVectorY-Labs/gcpvalidate/location"
+	"github.com/UnitVectorY-Labs/gcpvalidate/project"
 )
 
 // Compiled regex for Vertex AI name validation
@@ -59,4 +62,89 @@ func IsValidVertexModelName(name string) bool {
 func IsValidVertexEndpointName(name string) bool {
 	// Uses the same validation rules as model names
 	return IsValidVertexModelName(name)
+}
+
+// IsValidVertexModelResourceName validates a Vertex AI model resource path.
+//
+// Accepted path structures:
+//   - projects/{project}/locations/{location}/models/{modelId}
+//   - projects/{project}/locations/{location}/publishers/{publisher}/models/{modelId}
+//
+// Segment rules:
+//   - {project} must satisfy project.IsValidProjectID
+//   - {location} must satisfy location.IsValidLocation
+//   - {publisher} must be non-empty and contain no slashes
+//   - {modelId} must be non-empty and contain no slashes
+//
+// Note: This validates structure only, not whether the resource exists.
+func IsValidVertexModelResourceName(path string) bool {
+	// Empty string is invalid
+	if path == "" {
+		return false
+	}
+
+	// Check for leading/trailing whitespace
+	if !internal.HasTrimmedWhitespace(path) {
+		return false
+	}
+
+	// Split the path into segments
+	segments := strings.Split(path, "/")
+
+	// Check for the two valid formats
+	if len(segments) == 6 {
+		// Format: projects/{project}/locations/{location}/models/{modelId}
+		if segments[0] != "projects" || segments[2] != "locations" || segments[4] != "models" {
+			return false
+		}
+
+		projectID := segments[1]
+		loc := segments[3]
+		modelID := segments[5]
+
+		// Validate each segment
+		if !project.IsValidProjectID(projectID) {
+			return false
+		}
+		if !location.IsValidLocation(loc) {
+			return false
+		}
+		// Model ID must be valid path segment
+		if !internal.IsValidPathSegment(modelID) {
+			return false
+		}
+
+		return true
+	} else if len(segments) == 8 {
+		// Format: projects/{project}/locations/{location}/publishers/{publisher}/models/{modelId}
+		if segments[0] != "projects" || segments[2] != "locations" || 
+		   segments[4] != "publishers" || segments[6] != "models" {
+			return false
+		}
+
+		projectID := segments[1]
+		loc := segments[3]
+		publisher := segments[5]
+		modelID := segments[7]
+
+		// Validate each segment
+		if !project.IsValidProjectID(projectID) {
+			return false
+		}
+		if !location.IsValidLocation(loc) {
+			return false
+		}
+		// Publisher must be valid path segment
+		if !internal.IsValidPathSegment(publisher) {
+			return false
+		}
+		// Model ID must be valid path segment
+		if !internal.IsValidPathSegment(modelID) {
+			return false
+		}
+
+		return true
+	}
+
+	return false
 }
