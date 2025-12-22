@@ -10,7 +10,8 @@ import (
 var (
 	bucketNameRegex = regexp.MustCompile(`^[a-z0-9][a-z0-9._-]*[a-z0-9]$`)
 	// IP address pattern to reject (e.g., 192.168.1.1)
-	ipAddressRegex = regexp.MustCompile(`^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$`)
+	// Limited to 1-3 digits per octet to avoid catastrophic backtracking
+	ipAddressRegex = regexp.MustCompile(`^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$`)
 )
 
 // IsValidBucketName validates a Google Cloud Storage bucket name.
