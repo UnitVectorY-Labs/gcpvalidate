@@ -28,11 +28,11 @@ func main() {
 Validates the **format** of Google Cloud identifiers like project IDs, bucket names, and resource paths. All validation is local—no API calls, no existence checks, no IAM verification.
 
 ```go
-// ✅ Valid project IDs
+//  Valid project IDs
 project.IsValidProjectID("my-project-123")  // true
 project.IsValidProjectID("example-gcp")     // true
 
-// ❌ Invalid project IDs  
+//  Invalid project IDs  
 project.IsValidProjectID("My-Project")      // false (uppercase)
 project.IsValidProjectID("-bad-start")      // false (starts with hyphen)
 project.IsValidProjectID("bad-end-")        // false (ends with hyphen)
@@ -57,14 +57,14 @@ See [complete documentation](docs/README.md) for detailed validation rules and e
 ## Design Principles
 
 ### What It Validates
-- ✅ **Syntax** - Format matches documented Google Cloud conventions
-- ✅ **Length** - Identifier length is within allowed bounds
-- ✅ **Character sets** - Only permitted characters are used
+-  **Syntax** - Format matches documented Google Cloud conventions
+-  **Length** - Identifier length is within allowed bounds
+-  **Character sets** - Only permitted characters are used
 
 ### What It Does NOT Validate
-- ❌ **Existence** - Does not check if resource exists
-- ❌ **Permissions** - No IAM or access control checks
-- ❌ **Availability** - No API calls to verify resource state
+-  **Existence** - Does not check if resource exists
+-  **Permissions** - No IAM or access control checks
+-  **Availability** - No API calls to verify resource state
 
 ### API Design
 
@@ -81,26 +81,12 @@ No error messages means:
 - Fast and predictable
 - No error string bikeshedding
 
-### Dependencies
-
-**Runtime**: Zero dependencies beyond Go standard library for validation code.
-
-**Testing only**: `gopkg.in/yaml.v3` is used in test infrastructure but not imported by any production code.
-
-## Security
+## Simplicity
 
 - Length bounds enforced before regex evaluation
 - Anchored regex patterns (`^...$`) with explicit length checks
 - Uses Go's RE2 engine which avoids catastrophic backtracking
 - Whitespace (including tabs, newlines) rejected unless explicitly allowed
-
-## Contributing
-
-See [AGENTS.md](AGENTS.md) for technical architecture, coding conventions, and how to add new validators.
-
-## License
-
-See [LICENSE](LICENSE) for details.
 
 ## Disclaimer
 
