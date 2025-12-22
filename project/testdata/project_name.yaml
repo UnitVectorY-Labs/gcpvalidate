@@ -1,0 +1,18 @@
+valid:
+  - My Project
+  - Test Project 123
+  - Project-Name
+  - O'Brien's Project
+  - Great!
+  - Test 123!
+  - Proj
+
+invalid:
+  - abc
+  - This project name is way too long to be valid really
+  - ""
+  - Project@Name
+  - Project#123
+  - Project&Name
+  - " Project"
+  - "Project "

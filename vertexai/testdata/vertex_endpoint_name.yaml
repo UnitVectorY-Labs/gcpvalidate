@@ -1,0 +1,18 @@
+valid:
+  - MyEndpoint
+  - test_endpoint_123
+  - Endpoint-Name
+  - e
+  - E
+  - EndpointWithManyCharacters
+
+invalid:
+  - 123endpoint
+  - -bad-endpoint
+  - _bad_endpoint
+  - ""
+  - " MyEndpoint"
+  - "MyEndpoint "
+  - endpoint name
+  - endpoint@name
+  - this-endpoint-name-is-way-too-long-to-be-valid-really-it-exceeds-the-maximum-length-of-128-characters-which-is-the-limit-for-vertex-ai-endpoints

@@ -1,0 +1,27 @@
+valid:
+  - projects/my-project-123/locations/us-central1/models/12345
+  - projects/test-project/locations/global/models/my-model
+  - projects/example-project/locations/europe-west4/models/test_model
+  - projects/my-project-123/locations/us-central1/publishers/google/models/gemini-2.0
+  - projects/test-project/locations/global/publishers/anthropic/models/claude
+  - projects/example-project/locations/us-central1-a/publishers/google/models/gemini-1.5-pro
+
+invalid:
+  - projects/My-Project/locations/us-central1/models/12345
+  - projects/my-project/locations/US-CENTRAL1/models/12345
+  - projects/my-project-123/locations/us-central1/models/
+  - projects/my-project-123/locations/us-central1
+  - projects/my-project-123/models/12345
+  - locations/us-central1/models/12345
+  - projects/my-project-123/locations/us-central1/publishers//models/12345
+  - projects/my-project-123/locations/us-central1/publishers/google/models/
+  - ""
+  - " projects/my-project/locations/us-central1/models/12345"
+  - "projects/my-project/locations/us-central1/models/12345 "
+  - "projects/my-project/locations/us-central1/models/12345\n"
+  - "projects/my-project/locations/us-central1/models/12345\t"
+  - "projects/my-project/locations/us-central1/publishers/google\n/models/gemini"
+  - projects/my-project/locations/us-central1/models/test/model
+  - projects/my-project/locations/us-central1/models/a b
+  - projects/my-project/locations/us-central1/publishers/a b/models/gemini
+  - projects/my-project/locations/us-central1/publishers/google/models/my model

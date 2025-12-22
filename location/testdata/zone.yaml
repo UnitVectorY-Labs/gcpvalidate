@@ -1,0 +1,17 @@
+valid:
+  - us-central1-a
+  - us-central1-b
+  - europe-west4-c
+  - asia-northeast1-a
+
+invalid:
+  - us-central1
+  - US-CENTRAL1-A
+  - us_central1_a
+  - us central1 a
+  - ""
+  - " us-central1-a"
+  - "us-central1-a "
+  - global
+  - us-central1-ab
+  - us-central1-1
