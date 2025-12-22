@@ -69,6 +69,37 @@ project.IsValidProjectName("Invalid@Char")      // false - @ not allowed
 
 **Note**: This validates the display name shown in the console, not the Project ID used in APIs and resource paths.
 
+## IsValidProjectLocationParent
+
+**Signature**: `project.IsValidProjectLocationParent(parent string) bool`
+
+**Example**:
+
+```go
+import "github.com/UnitVectorY-Labs/gcpvalidate/project"
+
+// Valid parent paths
+project.IsValidProjectLocationParent(
+    "projects/my-project/locations/us-central1") // true
+
+project.IsValidProjectLocationParent(
+    "projects/example-project/locations/global") // true
+
+// Invalid parent paths
+project.IsValidProjectLocationParent(
+    "projects/My-Project/locations/us-central1") // false - invalid project ID
+
+project.IsValidProjectLocationParent(
+    "projects/my-project") // false - missing location
+```
+
+**Structure**: `projects/{project}/locations/{location}`
+
+**Segment validation**:
+- `{project}` - Must satisfy `project.IsValidProjectID`
+- `{location}` - Must satisfy `location.IsValidLocation`
+
 **References**:
 - [Organization resource management](https://cloud.google.com/resource-manager/docs/organization-resource-management)
+- [Google APIs: Resource names](https://cloud.google.com/apis/design/resource_names)
 

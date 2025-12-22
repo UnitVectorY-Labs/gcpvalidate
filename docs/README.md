@@ -15,14 +15,14 @@ Client-side syntactic validation for Google Cloud resource identifiers. Validate
 |---------|-----------|-------------|
 | [project](project.md) | `IsValidProjectID` | Validates GCP project identifier |
 | [project](project.md) | `IsValidProjectName` | Validates GCP project display name |
+| [project](project.md) | `IsValidProjectLocationParent` | Validates project/location parent path |
 | [location](location.md) | `IsValidRegion` | Validates region identifier |
 | [location](location.md) | `IsValidZone` | Validates zone identifier |
 | [location](location.md) | `IsValidLocation` | Validates location identifier (region, zone, or global) |
 | [storage](storage.md) | `IsValidBucketName` | Validates Cloud Storage bucket name |
 | [vertexai](vertexai.md) | `IsValidVertexModelName` | Validates Vertex AI model display name |
 | [vertexai](vertexai.md) | `IsValidVertexEndpointName` | Validates Vertex AI endpoint display name |
-| [resource](resource.md) | `IsValidVertexModelResourceName` | Validates full Vertex AI model resource path |
-| [resource](resource.md) | `IsValidProjectLocationParent` | Validates project/location parent path |
+| [vertexai](vertexai.md) | `IsValidVertexModelResourceName` | Validates full Vertex AI model resource path |
 
 ## Important Disclaimers
 

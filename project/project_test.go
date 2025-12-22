@@ -13,3 +13,7 @@ func TestIsValidProjectID(t *testing.T) {
 func TestIsValidProjectName(t *testing.T) {
 	testutil.RunValidatorTests(t, testutil.GetTestDataPath("project_name.yaml"), IsValidProjectName)
 }
+
+func TestIsValidProjectLocationParent(t *testing.T) {
+	testutil.RunValidatorTests(t, testutil.GetTestDataPath("project_location_parent.yaml"), IsValidProjectLocationParent)
+}
