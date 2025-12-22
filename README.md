@@ -1,202 +1,102 @@
 # gcpvalidate
 
-Client-side validation of Google Cloud resource identifiers and attributes for Go applications, based on documented conventions (not affiliated with Google).
+Client-side syntactic validation for Google Cloud resource identifiers in Go.
 
-## Design Principles
-
-### Goals
-
-- Provide client-side syntactic validation of common Google Cloud identifiers
-- Be idiomatic Go, boring, predictable, and easy to adopt
-- Avoid runtime dependencies beyond the Go standard library
-- Be safe against malformed or adversarial inputs
-- Make expansion easy without breaking APIs
-
-### Explicit Non-Goals
-
-- **No existence checks** - Does not verify resources exist
-- **No API calls** - All validation is local
-- **No IAM or permission validation** - Access control is not checked
-- **No future guarantees** - Google may change naming rules
-
-### Stability Promise
-
-- Validators reflect documented conventions at time of release
-- Changes in Google docs may require new versions of this library
-- Backward-incompatible changes require a major version bump
-
-## Package Layout
-
-```
-gcpvalidate/
-├── project/          // GCP project identifiers and metadata
-├── location/         // Regions, zones, and global identifiers
-├── storage/          // Cloud Storage
-├── vertexai/         // Vertex AI
-├── resource/         // Generic resource path validation helpers
-├── internal/         // Shared helpers (not exported)
-└── docs/             // Rendered documentation site
-```
-
-### Package Naming Rules
-
-- Lowercase
-- Singular where possible
-- Match Google product naming where reasonable
-- No abbreviations unless canonical (e.g. ai, iam)
-
-## Public API Design
-
-### Boolean Return Semantics
-
-All public validators return `bool` (not errors).
-
-**Reasons:**
-- This is a validation predicate, not a failure explanation
-- Keeps API friction extremely low
-- Prevents error string bikeshedding
-- Encourages use in guards, flags, config parsing
-
-### Naming Conventions
-
-Public functions must:
-- Start with `IsValid`
-- Include the full resource name
-- Be explicit about what is being validated
-
-**Examples:**
-- `IsValidProjectID`
-- `IsValidProjectName`
-- `IsValidBucketName`
-- `IsValidVertexModelName`
-
-**Avoid:**
-- `ValidateX`
-- `CheckX`
-- `ParseX`
-
-### Usage Example
+## Quick Start
 
 ```go
-import "github.com/UnitVectorY-Labs/gcpvalidate/project"
+package main
 
-if !project.IsValidProjectID(cfg.ProjectID) {
-    return fmt.Errorf("invalid project id")
+import (
+    "fmt"
+    "github.com/UnitVectorY-Labs/gcpvalidate/project"
+)
+
+func main() {
+    projectID := "my-gcp-project"
+    
+    if project.IsValidProjectID(projectID) {
+        fmt.Println("Valid project ID")
+    } else {
+        fmt.Println("Invalid project ID")
+    }
 }
 ```
 
-## Security and Performance
+## What It Does
 
-### Regex Safety Guarantees
+Validates the **format** of Google Cloud identifiers like project IDs, bucket names, and resource paths. All validation is local—no API calls, no existence checks, no IAM verification.
 
-All validators meet these requirements:
+```go
+// ✅ Valid project IDs
+project.IsValidProjectID("my-project-123")  // true
+project.IsValidProjectID("example-gcp")     // true
 
-1. **Length checked before regex** - Reject immediately if outside documented bounds
-2. **No unbounded repetition** - Avoid `.*`, `.+`, or catastrophic backtracking patterns
-3. **Regexes must be anchored** - Always `^...$`
-4. **No look-arounds** - No `(?=)`, `(?!`, etc.
-5. **Prefer rune iteration over regex where possible**
-
-### Input Handling Rules
-
-- **Leading and trailing whitespace** - MUST be rejected unless explicitly allowed by Google docs
-- **Unicode** - Unless explicitly documented, validators assume ASCII
-- **Empty strings** - Always invalid
-
-### Complexity Constraints
-
-- Validation must be O(n)
-- No allocations proportional to regex complexity
-- No recursion
-
-## Testing Strategy
-
-### Philosophy
-
-- Fully data-driven
-- No hard-coded test cases in Go files
-- Easy to add new examples without writing code
-
-### YAML Test Files
-
-Test data is stored in YAML files under each package's `testdata/` directory.
-
-**Test data layout:**
-
-```
-<package>/
-├── testdata/
-│   ├── <validator_name>.yaml
+// ❌ Invalid project IDs  
+project.IsValidProjectID("My-Project")      // false (uppercase)
+project.IsValidProjectID("-bad-start")      // false (starts with hyphen)
+project.IsValidProjectID("bad-end-")        // false (ends with hyphen)
 ```
 
-**YAML schema:**
-
-```yaml
-valid:
-  - my-bucket
-  - example.bucket.name
-
-invalid:
-  - MyBucket
-  - -bad
-  - bad-
-```
-
-**Rules:**
-- Only two keys: `valid`, `invalid`
-- Arrays of strings only
-- No metadata, no comments relied upon programmatically
-
-### Test Execution Model
-
-For each public validator:
-- Exactly one YAML file
-- Test runner:
-  - Loads YAML
-  - Iterates `valid` → expect `true`
-  - Iterates `invalid` → expect `false`
-- Tests must fail if:
-  - YAML missing
-  - YAML malformed
-  - Either list empty
-
-## Adding a New Validator
-
-1. **Choose the package** - Use existing package or create new one following naming rules
-2. **Implement the validator** - Follow the public API naming convention (`IsValidX`)
-3. **Create test data** - Add a YAML file in `<package>/testdata/`
-4. **Add test** - Create a test function that calls `testutil.RunValidatorTests`
-5. **Document** - Add to appropriate documentation page in `docs/`
-6. **Security review** - Ensure regex safety guarantees are met
-
-## Documentation
-
-- **User documentation** - See [docs/](docs/) for end-user documentation
-- **Architecture** - This README serves as the architecture and contribution guide
-
-## Building and Testing
+## Installation
 
 ```bash
-# Download dependencies
-go mod download
-
-# Build all packages
-go build -v ./...
-
-# Run all tests
-go test -v ./...
-
-# Run tests with coverage
-go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+go get github.com/UnitVectorY-Labs/gcpvalidate
 ```
+
+## Packages
+
+- **[project](docs/project.md)** - Project IDs and display names
+- **[location](docs/location.md)** - Regions, zones, and location identifiers
+- **[storage](docs/storage.md)** - Cloud Storage bucket names
+- **[vertexai](docs/vertexai.md)** - Vertex AI model and endpoint names
+- **[resource](docs/resource.md)** - Full resource path validation
+
+See [complete documentation](docs/README.md) for detailed validation rules and examples.
+
+## Design Principles
+
+### What It Validates
+- ✅ **Syntax** - Format matches documented Google Cloud conventions
+- ✅ **Length** - Identifier length is within allowed bounds
+- ✅ **Character sets** - Only permitted characters are used
+
+### What It Does NOT Validate
+- ❌ **Existence** - Does not check if resource exists
+- ❌ **Permissions** - No IAM or access control checks
+- ❌ **Availability** - No API calls to verify resource state
+
+### API Design
+
+All validators return `bool`:
+
+```go
+if !storage.IsValidBucketName(name) {
+    return fmt.Errorf("invalid bucket name: %s", name)
+}
+```
+
+No error messages means:
+- Low friction for guard clauses and config validation
+- Fast and predictable
+- No error string bikeshedding
+
+### Dependencies
+
+**Runtime**: Zero dependencies beyond Go standard library for validation code.
+
+**Testing only**: `gopkg.in/yaml.v3` is used in test infrastructure but not imported by any production code.
+
+## Security
+
+- Length bounds enforced before regex evaluation
+- No unbounded quantifiers (all patterns use bounded repetition like `{1,3}`)
+- Anchored regex patterns (`^...$`)
+- Whitespace (including tabs, newlines) rejected unless explicitly allowed
 
 ## Contributing
 
-Contributions are welcome! Please ensure:
-
-1. All validators follow GCP's requirements for validation
-2. Test data for passing and failing conditions is provided in YAML format
-3. Documentation is updated
+See [AGENTS.md](AGENTS.md) for technical architecture, coding conventions, and how to add new validators.
 
 ## License
 
@@ -204,4 +104,4 @@ See [LICENSE](LICENSE) for details.
 
 ## Disclaimer
 
-This library is not affiliated with Google. It validates format and conventions only, based on publicly available Google Cloud documentation.
+Not affiliated with Google. Validates format based on publicly documented conventions. Google may change naming rules—this library reflects conventions at time of release.
