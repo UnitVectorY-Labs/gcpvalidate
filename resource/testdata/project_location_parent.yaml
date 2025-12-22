@@ -1,0 +1,16 @@
+valid:
+  - projects/my-project-123/locations/us-central1
+  - projects/test-project/locations/global
+  - projects/example-project/locations/europe-west4
+  - projects/my-project-123/locations/us-central1-a
+
+invalid:
+  - projects/My-Project/locations/us-central1
+  - projects/my-project/locations/US-CENTRAL1
+  - projects/my-project-123/locations/
+  - projects/my-project-123
+  - locations/us-central1
+  - projects/my-project-123/locations/us-central1/models/12345
+  - ""
+  - " projects/my-project/locations/us-central1"
+  - "projects/my-project/locations/us-central1 "

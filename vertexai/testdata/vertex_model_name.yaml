@@ -1,0 +1,18 @@
+valid:
+  - MyModel
+  - test_model_123
+  - Model-Name
+  - m
+  - M
+  - ModelWithManyCharacters
+
+invalid:
+  - 123model
+  - -bad-model
+  - _bad_model
+  - ""
+  - " MyModel"
+  - "MyModel "
+  - model name
+  - model@name
+  - this-model-name-is-way-too-long-to-be-valid-really-it-exceeds-the-maximum-length-of-128-characters-which-is-the-limit-for-vertex-ai-models

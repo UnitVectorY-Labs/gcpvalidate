@@ -1,0 +1,19 @@
+valid:
+  - global
+  - us-central1
+  - us-east1
+  - europe-west4
+  - us-central1-a
+  - us-central1-b
+  - asia-northeast1-a
+
+invalid:
+  - US-CENTRAL1
+  - us_central1
+  - us central1
+  - ""
+  - " global"
+  - "global "
+  - GLOBAL
+  - us-
+  - -central1

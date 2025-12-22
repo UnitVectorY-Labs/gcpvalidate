@@ -1,0 +1,22 @@
+valid:
+  - my-project-123
+  - example-project
+  - test-project-001
+  - a12345
+  - project-with-many-hyphens
+  - z99999-test
+
+invalid:
+  - My-Project
+  - -bad-project
+  - bad-project-
+  - 123project
+  - short
+  - this-project-name-is-way-too-long-to-be-valid-really
+  - project_with_underscore
+  - project.with.dots
+  - ""
+  - " my-project"
+  - "my-project "
+  - my project
+  - UPPERCASE

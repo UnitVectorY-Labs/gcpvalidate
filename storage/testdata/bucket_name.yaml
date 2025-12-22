@@ -1,0 +1,26 @@
+valid:
+  - my-bucket
+  - test-bucket-123
+  - bucket.with.dots
+  - bucket_with_underscores
+  - my-bucket.example.com
+  - a12
+  - bucket-name-with-many-segments.and.dots.example.com
+
+invalid:
+  - My-Bucket
+  - -bad-bucket
+  - bad-bucket-
+  - ab
+  - this-bucket-name-is-way-too-long-to-be-valid-really-it-exceeds-the-maximum-length
+  - bucket..with..consecutive..dots
+  - 192.168.1.1
+  - 10.0.0.1
+  - ""
+  - " my-bucket"
+  - "my-bucket "
+  - my bucket
+  - bucket@name
+  - UPPERCASE
+  - .startswith.dot
+  - endswith.dot.

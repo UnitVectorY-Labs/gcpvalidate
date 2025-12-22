@@ -1,0 +1,3 @@
+theme: jekyll-theme-minimal
+title: gcpvalidate
+description: Client-side validation for Google Cloud resource identifiers
