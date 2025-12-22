@@ -5,84 +5,81 @@ nav_order: 2
 permalink: /resource
 ---
 
-# Resource
+# resource package
 
-The `resource` package validates the structure of common Google Cloud resource paths. It validates required keywords and segment positions and delegates segment validation to other packages.
+Validators for Google Cloud resource path structures. Validates required keywords and segment positions.
 
 ## IsValidVertexModelResourceName
 
 **Signature**: `resource.IsValidVertexModelResourceName(path string) bool`
 
-### Accepted path structures
-
-At minimum, the validator recognizes these Vertex AI model resource name forms:
-
-1. **Model Registry model resource**:
-   - `projects/{project}/locations/{location}/models/{modelId}`
-
-2. **Publisher model resource**:
-   - `projects/{project}/locations/{location}/publishers/{publisher}/models/{modelId}`
-
-The Vertex AI locations documentation shows the canonical `projects/PROJECT/locations/us-central1/...` resource style.
-
-### Segment rules
-
-- `{project}` must satisfy `project.IsValidProjectID`.
-- `{location}` must satisfy `location.IsValidLocation` (syntax-based).
-- `{publisher}` must be non-empty and contain no slashes.
-- `{modelId}` must be non-empty and contain no slashes.
-
-### Usage example
+**Example**:
 
 ```go
 import "github.com/UnitVectorY-Labs/gcpvalidate/resource"
 
-if !resource.IsValidVertexModelResourceName(cfg.ModelPath) {
-    return fmt.Errorf("invalid model resource name")
-}
+// Valid resource paths
+resource.IsValidVertexModelResourceName(
+    "projects/my-project/locations/us-central1/models/12345") // true
+
+resource.IsValidVertexModelResourceName(
+    "projects/my-project/locations/us-central1/publishers/google/models/gemini-2.0") // true
+
+// Invalid resource paths
+resource.IsValidVertexModelResourceName(
+    "projects/My-Project/locations/us-central1/models/12345") // false - invalid project ID
+
+resource.IsValidVertexModelResourceName(
+    "projects/my-project/locations/us-central1/models/") // false - empty model ID
+
+resource.IsValidVertexModelResourceName(
+    "projects/my-project/models/12345") // false - missing location segment
 ```
 
-### Notes
+**Accepted structures**:
 
-- `{modelId}` formats vary. This function does not enforce a narrow regex for `{modelId}`.
-- This validates structure only, not whether the resource exists.
-- Leading and trailing whitespace is rejected.
-- Empty strings are invalid.
+1. Model Registry: `projects/{project}/locations/{location}/models/{modelId}`
+2. Publisher model: `projects/{project}/locations/{location}/publishers/{publisher}/models/{modelId}`
+
+**Segment validation**:
+- `{project}` - Must satisfy `project.IsValidProjectID`
+- `{location}` - Must satisfy `location.IsValidLocation`
+- `{publisher}` - Non-empty, no slashes, no whitespace
+- `{modelId}` - Non-empty, no slashes, no whitespace
+
+**Note**: Model ID formats vary. This function validates structure but does not enforce strict character sets for `{modelId}` or `{publisher}` beyond rejecting slashes and whitespace.
 
 ## IsValidProjectLocationParent
 
 **Signature**: `resource.IsValidProjectLocationParent(parent string) bool`
 
-### Accepted structure
-
-- `projects/{project}/locations/{location}`
-
-This structure is widely used in Google APIs and commonly documented as the parent format.
-
-### Segment rules
-
-- `{project}` must satisfy `project.IsValidProjectID`.
-- `{location}` must satisfy `location.IsValidLocation`.
-
-### Usage example
+**Example**:
 
 ```go
 import "github.com/UnitVectorY-Labs/gcpvalidate/resource"
 
-if !resource.IsValidProjectLocationParent(cfg.Parent) {
-    return fmt.Errorf("invalid project location parent")
-}
+// Valid parent paths
+resource.IsValidProjectLocationParent(
+    "projects/my-project/locations/us-central1") // true
+
+resource.IsValidProjectLocationParent(
+    "projects/example-project/locations/global") // true
+
+// Invalid parent paths
+resource.IsValidProjectLocationParent(
+    "projects/My-Project/locations/us-central1") // false - invalid project ID
+
+resource.IsValidProjectLocationParent(
+    "projects/my-project") // false - missing location
 ```
 
-### Notes
+**Structure**: `projects/{project}/locations/{location}`
 
-- This validates structure only, not whether the resource exists.
-- Leading and trailing whitespace is rejected.
-- Empty strings are invalid.
+**Segment validation**:
+- `{project}` - Must satisfy `project.IsValidProjectID`
+- `{location}` - Must satisfy `location.IsValidLocation`
 
-## References
+**References**:
+- [Vertex AI: Locations](https://cloud.google.com/vertex-ai/docs/general/locations)
+- [Google APIs: Resource names](https://cloud.google.com/apis/design/resource_names)
 
-- [Vertex AI: Locations](https://cloud.google.com/vertex-ai/docs/general/locations) - Shows `projects/PROJECT/locations/us-central1/datasets/...` usage
-- [Cloud Run API](https://cloud.google.com/run/docs/reference/rest/v2/projects.locations.services/list) - Documents `projects/{project}/locations/{location}` format
-- [Google APIs: Resource names](https://cloud.google.com/apis/design/resource_names) - General resource naming design
-- [Resource Manager: Project ID rules](https://cloud.google.com/resource-manager/reference/rest/v1beta1/projects) - For `{project}` segment validation

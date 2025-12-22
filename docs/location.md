@@ -5,92 +5,86 @@ nav_order: 2
 permalink: /location
 ---
 
-# Location
+# location package
 
-The `location` package validates Google Cloud location identifiers.
-
-This package supports **syntax validation**: the string looks like a region or zone token. It does not check whether the location currently exists or is available for a specific product.
+Validators for Google Cloud location identifiers. These validate **syntax only**—not whether the location currently exists or is available for a specific service.
 
 ## IsValidRegion
 
 **Signature**: `location.IsValidRegion(region string) bool`
 
-### Rules
-
-A region token must:
-- Be non-empty.
-- Contain only lowercase letters, digits, and hyphens.
-- Match the general "region code" style used by Google Cloud products, such as `us-central1`, `us-east5`, and `northamerica-northeast1`.
-
-### Usage example
+**Example**:
 
 ```go
 import "github.com/UnitVectorY-Labs/gcpvalidate/location"
 
-if !location.IsValidRegion(cfg.Region) {
-    return fmt.Errorf("invalid region")
-}
+// Valid regions
+location.IsValidRegion("us-central1")             // true
+location.IsValidRegion("europe-west4")            // true
+location.IsValidRegion("northamerica-northeast1") // true
+
+// Invalid regions
+location.IsValidRegion("us-central1-a")           // false - zone, not region
+location.IsValidRegion("US-CENTRAL1")             // false - uppercase not allowed
+location.IsValidRegion("global")                  // false - use IsValidLocation for "global"
 ```
 
-### Notes
+**Rules**:
 
-- This does not guarantee the region exists or is available for a given service.
-- Many Google APIs accept `projects/{project}/locations/{location}` and state that `{location}` must be a valid region.
-- Leading and trailing whitespace is rejected.
+- Contain only lowercase letters, digits, and hyphens
+- Match region code style (e.g., `us-central1`, `europe-west4`)
+
+**Note**: Accepts region-like patterns. Does not verify the region exists.
 
 ## IsValidZone
 
 **Signature**: `location.IsValidZone(zone string) bool`
 
-### Rules
-
-A zone token must:
-- Be non-empty.
-- Follow the zone naming pattern described in Compute Engine docs: a zone name is formed from `<region>-<zone>`, for example `us-central1-a`.
-
-### Usage example
+**Example**:
 
 ```go
 import "github.com/UnitVectorY-Labs/gcpvalidate/location"
 
-if !location.IsValidZone(cfg.Zone) {
-    return fmt.Errorf("invalid zone")
-}
+// Valid zones
+location.IsValidZone("us-central1-a")             // true
+location.IsValidZone("europe-west4-b")            // true
+
+// Invalid zones
+location.IsValidZone("us-central1")               // false - region, not zone
+location.IsValidZone("US-CENTRAL1-A")             // false - uppercase not allowed
 ```
 
-### Notes
+**Rules**:
 
-- Zones are a Compute concept; many products are regional-only. Still, zone syntax is useful when validating inputs for zonal services.
-- Leading and trailing whitespace is rejected.
+- Follow zone naming pattern: `<region>-<zone-letter>` (e.g., `us-central1-a`)
+
+**Note**: Zones are primarily a Compute Engine concept. Many products are regional-only.
 
 ## IsValidLocation
 
 **Signature**: `location.IsValidLocation(loc string) bool`
 
-### Rules
-
-A location token must:
-- Pass either `IsValidRegion` or `IsValidZone`, OR
-- Be the literal string `"global"`.
-
-### Usage example
+**Example**:
 
 ```go
 import "github.com/UnitVectorY-Labs/gcpvalidate/location"
 
-if !location.IsValidLocation(cfg.Location) {
-    return fmt.Errorf("invalid location")
-}
+// Valid locations
+location.IsValidLocation("global")                // true
+location.IsValidLocation("us-central1")           // true (region)
+location.IsValidLocation("us-central1-a")         // true (zone)
+
+// Invalid locations
+location.IsValidLocation("GLOBAL")                // false - case sensitive
+location.IsValidLocation("invalid location")      // false - spaces not allowed
 ```
 
-### Notes
+**Rules**:
 
-- This does not guarantee the location currently exists or is available for a given service.
-- The `"global"` literal is supported as some services use it.
-- Leading and trailing whitespace is rejected.
+- Pass `IsValidRegion` or `IsValidZone`, OR
+- Be the literal string `"global"`
 
-## References
+**References**:
+- [Compute Engine: Regions and zones](https://cloud.google.com/compute/docs/regions-zones)
+- [Vertex AI: Locations](https://cloud.google.com/vertex-ai/docs/general/locations)
 
-- [Compute Engine: Regions and zones](https://cloud.google.com/compute/docs/regions-zones) - Describes zone name formation and example `us-central1-a`
-- [Vertex AI: Locations](https://cloud.google.com/vertex-ai/docs/general/locations) - Shows region code examples and resource paths like `projects/PROJECT/locations/us-central1/...`
-- [Cloud Run API](https://cloud.google.com/run/docs/reference/rest/v2/projects.locations.services/list) - States location must be a valid region and uses `projects/{project}/locations/{location}`
