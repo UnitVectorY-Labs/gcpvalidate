@@ -93,6 +93,7 @@ invalid:
 3. Add `testdata/<name>.yaml` with a non-empty `valid` and `invalid` list.
 4. Add a `*_test.go` test using `testutil.RunValidatorTests`.
 5. Run the full test suite before submitting.
+6. Ensure the documentation in the "docs" folder is updated including the case if a validator is just modified.
 
 ## Local commands
 
