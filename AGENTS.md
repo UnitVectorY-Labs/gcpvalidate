@@ -29,12 +29,14 @@ Guidance for AI agents contributing to this repository. Keep changes small, test
 
 ### Validation flow
 
-Follow the established structure across packages:
+Follow the established structure across packages (order may vary based on efficiency):
 
-1. Fast rejects first (empty and length bounds).
-2. Whitespace trimming check via `internal.HasTrimmedWhitespace`.
-3. Cheap structural checks.
+1. Fast rejects first (empty strings, obvious length violations).
+2. Whitespace check via `internal.HasTrimmedWhitespace`.
+3. Cheap structural checks (character validation, position checks).
 4. Regex last, when needed.
+
+Note: The exact ordering between steps 1 and 2 may vary. The key is to fail fast on obviously invalid input before expensive operations.
 
 ### Whitespace and path safety
 
