@@ -1,11 +1,12 @@
 ---
 layout: default
 title: Vertex AI
-nav_order: 2
-permalink: /vertexai
+parent: Validators
+nav_order: 4
+permalink: /validators/vertexai
 ---
 
-# vertexai package
+# Vertex AI
 
 Validators for Vertex AI resource identifiers.
 

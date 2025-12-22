@@ -1,11 +1,12 @@
 ---
 layout: default
 title: Location
+parent: Validators
 nav_order: 2
-permalink: /location
+permalink: /validators/location
 ---
 
-# location package
+# Location
 
 Validators for Google Cloud location identifiers. These validate **syntax only**—not whether the location currently exists or is available for a specific service.
 

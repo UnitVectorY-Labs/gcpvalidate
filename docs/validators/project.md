@@ -1,11 +1,12 @@
 ---
 layout: default
 title: Project
-nav_order: 2
-permalink: /project
+parent: Validators
+nav_order: 1
+permalink: /validators/project
 ---
 
-# project package
+# Project
 
 Validators for Google Cloud Project identifiers.
 

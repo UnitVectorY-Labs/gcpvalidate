@@ -1,11 +1,12 @@
 ---
 layout: default
 title: Storage
-nav_order: 2
-permalink: /storage
+parent: Validators
+nav_order: 3
+permalink: /validators/storage
 ---
 
-# storage package
+# Storage
 
 Validators for Google Cloud Storage identifiers.
 
