@@ -1,6 +1,6 @@
 # gcpvalidate
 
-Client-side syntactic validation for Google Cloud resource identifiers.
+Client-side validation of Google Cloud resource identifiers and attributes for Go applications, based on documented conventions (not affiliated with Google).
 
 ## Design Principles
 
@@ -194,10 +194,9 @@ go test -race -coverprofile=coverage.txt -covermode=atomic ./...
 
 Contributions are welcome! Please ensure:
 
-1. All validators follow the security and performance requirements
-2. Test data is provided in YAML format
+1. All validators follow GCP's requirements for validation
+2. Test data for passing and failing conditions is provided in YAML format
 3. Documentation is updated
-4. All tests pass
 
 ## License
 
@@ -206,4 +205,3 @@ See [LICENSE](LICENSE) for details.
 ## Disclaimer
 
 This library is not affiliated with Google. It validates format and conventions only, based on publicly available Google Cloud documentation.
-
