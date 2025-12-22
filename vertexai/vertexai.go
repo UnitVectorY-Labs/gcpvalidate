@@ -117,8 +117,8 @@ func IsValidVertexModelResourceName(path string) bool {
 		return true
 	} else if len(segments) == 8 {
 		// Format: projects/{project}/locations/{location}/publishers/{publisher}/models/{modelId}
-		if segments[0] != "projects" || segments[2] != "locations" || 
-		   segments[4] != "publishers" || segments[6] != "models" {
+		if segments[0] != "projects" || segments[2] != "locations" ||
+			segments[4] != "publishers" || segments[6] != "models" {
 			return false
 		}
 
