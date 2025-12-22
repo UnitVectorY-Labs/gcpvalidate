@@ -1,361 +1,119 @@
-# gcpvalidate - Technical Architecture and Conventions
+# AGENTS.md
 
-This document describes the technical architecture, coding conventions, and contribution guidelines for gcpvalidate. For user-facing documentation, see [README.md](README.md) and [docs/](docs/).
+Guidance for AI agents contributing to this repository. Keep changes small, testable, and consistent with existing patterns.
 
-## Package Structure
+## Project scope
 
-```
-gcpvalidate/
-├── project/          // GCP project identifiers and metadata
-├── location/         // Regions, zones, and global identifiers
-├── storage/          // Cloud Storage bucket names
-├── vertexai/         // Vertex AI model and endpoint names
-├── resource/         // Generic resource path validation
-├── internal/         // Shared helpers (not exported)
-│   ├── whitespace.go // Whitespace validation helper
-│   └── testutil/     // Test infrastructure
-└── docs/             // User-facing documentation
-```
+- This repository is a Go module that provides small, pure validation helpers.
+- Production code should stay dependency-free beyond the Go standard library.
+- All external dependencies must be test-only unless there is a strong, reviewed reason.
 
-### Package Naming Rules
+## Repository layout
 
-- Lowercase
-- Singular where possible
-- Match Google product naming where reasonable
-- No abbreviations unless canonical (e.g., `ai`, `iam`)
-- One package per Google Cloud product or logical domain
+- Each domain lives in its own package under the module root (for example `project`, `location`, `storage`, `vertexai`, `resource`).
+- Shared helpers live in `internal/` and are not exported.
 
-## Public API Conventions
+## Go version and module rules
 
-### Function Naming
+- Respect the Go version declared in `go.mod`.
+- Do not add new module dependencies lightly.
+- If you must add a dependency, prefer test-only and justify it in the PR description.
 
-All public validator functions must:
-- Start with `IsValid`
-- Include the full resource type name
-- Be explicit about what is being validated
+## Public API conventions
 
-**Examples:**
-- `IsValidProjectID`
-- `IsValidProjectName`
-- `IsValidBucketName`
-- `IsValidVertexModelName`
+- Public validators are predicates and must be named `IsValidX`.
+- Public validators must return `bool` only.
+- Validators must be deterministic, side-effect free, and must not perform any network calls.
 
-**Avoid:**
-- `ValidateX` (imperative, not predicate)
-- `CheckX` (ambiguous)
-- `ParseX` (implies transformation)
+## Implementation conventions
 
-### Return Type
+### Validation flow
 
-All validators **MUST** return `bool` only.
+Follow the established structure across packages:
 
-**Reasons:**
-- This is a validation predicate, not a failure explanation
-- Keeps API friction extremely low for guard clauses
-- Prevents error string bikeshedding
-- Encourages use in config parsing and validation
+1. Fast rejects first (empty and length bounds).
+2. Whitespace trimming check via `internal.HasTrimmedWhitespace`.
+3. Cheap structural checks.
+4. Regex last, when needed.
 
-## Security Requirements
+### Whitespace and path safety
 
-### Whitespace Handling
+- Use `internal.HasTrimmedWhitespace(s)` to reject leading and trailing whitespace.
+- For resource path segments, use `internal.IsValidPathSegment(s)` rather than re-implementing checks.
 
-All validators **MUST** use `internal.HasTrimmedWhitespace()` to reject leading/trailing whitespace.
+### Regex guidelines
 
-This catches:
-- Spaces (` `)
-- Tabs (`\t`)
-- Newlines (`\n`, `\r`)
-- Other whitespace characters
+- Compile regexes once at package scope with `regexp.MustCompile`.
+- Anchor patterns with `^` and `$`.
+- Prefer bounded quantifiers where practical.
+- Avoid unnecessary complexity.
 
-**Never** check only for space character with `s[0] == ' '`.
+### Style
 
-### Regex Safety
+- Keep functions small and readable.
+- Use clear names, minimal comments, and follow existing package patterns.
+- Avoid introducing new exported identifiers unless required.
 
-All validators must meet these requirements:
+## Testing requirements
 
-1. **Length checked before regex**
-   - Check minimum and maximum length bounds before applying regex
-   - Prevents regex engine from processing oversized inputs
+### Data-driven tests
 
-2. **Bounded quantifiers**
-   - Use `{min,max}` instead of `*` or `+` where possible
-   - Example: `[0-9]{1,3}` instead of `[0-9]+`
-
-3. **Anchored patterns**
-   - Always use `^` and `$` to anchor entire string
-   - Prevents partial matches
-
-4. **No look-arounds**
-   - Avoid `(?=)`, `(?!)`, `(?<=)`, `(?<!)`
-   - These can cause performance issues
-
-### Input Validation Order
-
-Standard validation flow:
-
-```go
-func IsValidX(input string) bool {
-    // 1. Empty string check
-    if input == "" {
-        return false
-    }
-    
-    // 2. Whitespace check (catches tabs, newlines, etc.)
-    if !internal.HasTrimmedWhitespace(input) {
-        return false
-    }
-    
-    // 3. Length bounds
-    if len(input) < MIN || len(input) > MAX {
-        return false
-    }
-    
-    // 4. Character-specific checks (if needed)
-    if input[0] == '-' {
-        return false
-    }
-    
-    // 5. Regex validation
-    return regex.MatchString(input)
-}
-```
-
-## Testing Strategy
-
-### Data-Driven Testing
-
-All validators use YAML-based test data:
-
-**File location:** `<package>/testdata/<validator_name>.yaml`
-
-**Schema:**
-```yaml
-valid:
-  - test-case-1
-  - test-case-2
-
-invalid:
-  - bad-case-1
-  - bad-case-2
-```
-
-**Rules:**
-- Only two keys: `valid` and `invalid`
-- Arrays of strings only
-- Both arrays must be non-empty
-- No metadata or programmatic comments
-
-### Test Execution
-
-Use `internal/testutil.RunValidatorTests`:
-
-```go
-func TestIsValidProjectID(t *testing.T) {
-    testutil.RunValidatorTests(t, 
-        testutil.GetTestDataPath("project_id.yaml"), 
-        IsValidProjectID)
-}
-```
-
-### Test Naming
-
-The test runner uses **index-based naming** to avoid issues with special characters:
-
-```
-TestIsValidProjectID/valid/0
-TestIsValidProjectID/valid/1
-TestIsValidProjectID/invalid/0
-TestIsValidProjectID/invalid/1
-```
-
-This prevents:
-- Slash characters causing subtest nesting
-- Empty strings creating ambiguous names
-- Special characters breaking test output
-
-## Adding a New Validator
-
-### Step 1: Choose Package
-
-Use existing package if logical fit, or create new package following naming rules.
-
-### Step 2: Implement Validator
-
-```go
-// Package mypackage provides validators for...
-package mypackage
-
-import (
-    "regexp"
-    "github.com/UnitVectorY-Labs/gcpvalidate/internal"
-)
-
-var myRegex = regexp.MustCompile(`^[a-z][a-z0-9-]*$`)
-
-// IsValidMyResource validates...
-//
-// Rules:
-//   - Must be 3-63 characters
-//   - Start with lowercase letter
-//   - Contain only lowercase letters, digits, hyphens
-func IsValidMyResource(name string) bool {
-    if name == "" {
-        return false
-    }
-    
-    if !internal.HasTrimmedWhitespace(name) {
-        return false
-    }
-    
-    if len(name) < 3 || len(name) > 63 {
-        return false
-    }
-    
-    return myRegex.MatchString(name)
-}
-```
-
-### Step 3: Create Test Data
-
-Create `mypackage/testdata/my_resource.yaml`:
+- Each validator must have YAML-based test data in `<package>/testdata/`.
+- File naming should match the validator subject (snake case).
+- YAML schema must be exactly:
 
 ```yaml
 valid:
-  - valid-name-1
-  - valid-name-2
+  - example
 
 invalid:
-  - Invalid-Name
-  - -bad-start
-  - ""
-  - "name\n"
-  - "name\t"
+  - example
 ```
 
-### Step 4: Add Test
+- Only the keys `valid` and `invalid`.
+- Arrays of strings only.
+- Both arrays must be non-empty.
 
-Create `mypackage/mypackage_test.go`:
+### Test runner
 
-```go
-package mypackage
+- Use `internal/testutil.RunValidatorTests` for validator tests.
+- Tests should be named `TestIsValidX` and should load YAML via `testutil.GetTestDataPath`.
 
-import (
-    "testing"
-    "github.com/UnitVectorY-Labs/gcpvalidate/internal/testutil"
-)
+### Coverage expectations
 
-func TestIsValidMyResource(t *testing.T) {
-    testutil.RunValidatorTests(t, 
-        testutil.GetTestDataPath("my_resource.yaml"), 
-        IsValidMyResource)
-}
-```
+- New validators must include representative valid and invalid cases.
+- Include edge cases for whitespace handling and length bounds.
 
-### Step 5: Update Documentation
+## Adding a new validator
 
-1. Create `docs/mypackage.md` with:
-   - Function signature
-   - Validation rules
-   - Code examples (both valid and invalid)
-   - Links to Google Cloud documentation
+1. Pick the correct package, or create a new one using existing naming patterns.
+2. Implement `IsValidX(string) bool` following the validation flow above.
+3. Add `testdata/<name>.yaml` with a non-empty `valid` and `invalid` list.
+4. Add a `*_test.go` test using `testutil.RunValidatorTests`.
+5. Run the full test suite before submitting.
 
-2. Add entry to `docs/README.md` table
-
-3. Run tests: `go test ./mypackage/...`
-
-## Documentation Conventions
-
-### docs/README.md
-
-Contains a **table** listing all packages and validators with brief descriptions. This is the overview/index page.
-
-### docs/<package>.md
-
-Each package documentation page must include:
-
-1. **Function signature**
-2. **Code example** showing both success and failure cases
-3. **Validation rules** in plain English
-4. **Links to authoritative Google Cloud documentation**
-
-**Example structure:**
-
-```markdown
-# mypackage package
-
-## IsValidMyResource
-
-**Signature**: `mypackage.IsValidMyResource(name string) bool`
-
-**Example**:
-
-```go
-import "github.com/UnitVectorY-Labs/gcpvalidate/mypackage"
-
-// Valid
-if mypackage.IsValidMyResource("my-resource") {
-    // Success
-}
-
-// Invalid
-if !mypackage.IsValidMyResource("Invalid-Name") {
-    // Fails validation
-}
-```
-
-**Rules**:
-- Must be 3-63 characters
-- Start with lowercase letter
-- Contain only lowercase letters, digits, hyphens
-
-**References**:
-- [Google Cloud Resource Naming](https://cloud.google.com/...)
-```
-
-### Style Guidelines
-
-Documentation should be:
-- **Information dense** - No fluff, only critical details
-- **Concise** - Short sentences, bullet points
-- **Factual** - State what is validated, not what is "obvious"
-- **Example-driven** - Show, don't just tell
-
-## Build and Test Commands
+## Local commands
 
 ```bash
-# Download dependencies
 go mod download
-
-# Build all packages
-go build -v ./...
-
-# Run all tests
+go build ./...
 go test ./...
-
-# Run tests with race detection and coverage
 go test -race -coverprofile=coverage.txt -covermode=atomic ./...
-
-# Run tests for specific package
-go test ./project/...
 ```
 
-## Code Review Checklist
+## Change discipline
 
-Before submitting:
+- Prefer small commits and focused PRs.
+- Do not mix refactors with feature changes unless necessary.
+- Keep formatting and lint noise out of functional changes.
 
-- [ ] Validator function named `IsValidX`
-- [ ] Returns `bool` only
-- [ ] Uses `internal.HasTrimmedWhitespace()` for whitespace checking
-- [ ] Length checked before regex
-- [ ] Regex uses bounded quantifiers where possible
-- [ ] YAML test data created with valid and invalid cases
-- [ ] Test includes cases for whitespace (tabs, newlines)
-- [ ] Documentation updated in `docs/<package>.md`
-- [ ] Entry added to `docs/README.md` table
-- [ ] All tests pass: `go test ./...`
+## Review checklist
 
-## Stability Promise
-
-- Validators reflect documented Google Cloud conventions at time of release
-- Breaking changes require major version bump
-- Google may change naming rules - library will be updated accordingly
+- [ ] Public function name is `IsValidX`
+- [ ] Return type is `bool`
+- [ ] Uses `internal.HasTrimmedWhitespace` where applicable
+- [ ] Length bounds checked early
+- [ ] Regex compiled once, anchored, and used last
+- [ ] YAML test data added with non-empty `valid` and `invalid`
+- [ ] Test uses `testutil.RunValidatorTests`
+- [ ] `go test ./...` passes
