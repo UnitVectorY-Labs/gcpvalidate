@@ -21,21 +21,6 @@ if !project.IsValidProjectID("my-project-123") {
 
 All validators return `bool`—no error messages for low friction and fast validation.
 
-## Validators
-
-| Package | Validator | Description |
-|---------|-----------|-------------|
-| [project](./validators/project.md) | `IsValidProjectID` | Validates GCP project identifier |
-| [project](./validators/project.md) | `IsValidProjectName` | Validates GCP project display name |
-| [project](./validators/project.md) | `IsValidProjectLocationParent` | Validates project/location parent path |
-| [location](./validators/location.md) | `IsValidRegion` | Validates region identifier |
-| [location](./validators/location.md) | `IsValidZone` | Validates zone identifier |
-| [location](./validators/location.md) | `IsValidLocation` | Validates location identifier (region, zone, or global) |
-| [storage](./validators/storage.md) | `IsValidBucketName` | Validates Cloud Storage bucket name |
-| [vertexai](./validators/vertexai.md) | `IsValidVertexModelName` | Validates Vertex AI model display name |
-| [vertexai](./validators/vertexai.md) | `IsValidVertexEndpointName` | Validates Vertex AI endpoint display name |
-| [vertexai](./validators/vertexai.md) | `IsValidVertexModelResourceName` | Validates full Vertex AI model resource path |
-
 ## Important Disclaimers
 
 - **No existence checks**: Validators confirm syntax only, not whether a resource exists
