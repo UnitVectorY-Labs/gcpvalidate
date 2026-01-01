@@ -5,6 +5,7 @@ valid:
   - m
   - M
   - ModelWithManyCharacters
+  - gemini-2.5-flash
 
 invalid:
   - 123model

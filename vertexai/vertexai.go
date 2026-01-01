@@ -12,16 +12,20 @@ import (
 
 // Compiled regex for Vertex AI name validation
 var (
-	vertexNameRegex = regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9_-]*$`)
+	vertexNameRegex = regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9_.-]*$`)
 )
 
 // IsValidVertexModelName validates a Vertex AI model name.
 //
 // A valid model name must:
-//   - Contain only letters, numbers, dashes, and underscores
+//   - Contain only letters, numbers, dashes, underscores, and periods
 //   - Be case-sensitive
 //   - Start with a letter
 //   - Be no more than 128 characters long
+//   - Periods (.) are allowed because they appear in Google's model names (e.g., gemini-2.5-flash),
+//     though they are not typically used in user-created model names
+//
+// See: https://docs.cloud.google.com/vertex-ai/docs/general/resource-naming
 //
 // Note: This validates the display name, not server-assigned numeric IDs
 // or publisher model IDs.
@@ -53,10 +57,14 @@ func IsValidVertexModelName(name string) bool {
 // IsValidVertexEndpointName validates a Vertex AI endpoint name.
 //
 // A valid endpoint name must:
-//   - Contain only letters, numbers, dashes, and underscores
+//   - Contain only letters, numbers, dashes, underscores, and periods
 //   - Be case-sensitive
 //   - Start with a letter
 //   - Be no more than 128 characters long
+//   - Periods (.) are allowed because they appear in Google's model names (e.g., gemini-2.5-flash),
+//     though they are not typically used in user-created endpoint names
+//
+// See: https://docs.cloud.google.com/vertex-ai/docs/general/resource-naming
 //
 // Note: The naming rules are identical to IsValidVertexModelName.
 func IsValidVertexEndpointName(name string) bool {

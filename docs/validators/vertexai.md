@@ -32,10 +32,13 @@ vertexai.IsValidVertexModelName("model name")       // false - spaces not allowe
 
 **Rules**:
 
-- Contain only letters, numbers, dashes, and underscores
+- Contain only letters, numbers, dashes, underscores, and periods
 - Be case-sensitive
 - Start with a letter
 - Be no more than 128 characters long
+- Periods (`.`) are allowed because they appear in Google's model names (e.g., `gemini-2.5-flash`), though they are not used in user-created model names
+
+**Reference**: [Vertex AI Resource Naming](https://docs.cloud.google.com/vertex-ai/docs/general/resource-naming)
 
 **Note**: This validates the display name you assign, not server-assigned numeric IDs or publisher model IDs.
 
