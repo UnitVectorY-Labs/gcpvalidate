@@ -25,7 +25,7 @@ func main() {
 
 ## What It Does
 
-Validates the **format** of Google Cloud identifiers like project IDs, bucket names, and resource paths. All validation is local—no API calls, no existence checks, no IAM verification.
+Validates the **format** of Google Cloud identifiers like project IDs, bucket names, and resource paths. All validation is local withno API calls, no existence checks, no IAM verification. Intended for fail-fast checking in your application before making API calls.
 
 ```go
 //  Valid project IDs
@@ -38,21 +38,9 @@ project.IsValidProjectID("-bad-start")      // false (starts with hyphen)
 project.IsValidProjectID("bad-end-")        // false (ends with hyphen)
 ```
 
-## Installation
+## Available Validators
 
-```bash
-go get github.com/UnitVectorY-Labs/gcpvalidate
-```
-
-## Packages
-
-- **[project](docs/project.md)** - Project IDs and display names
-- **[location](docs/location.md)** - Regions, zones, and location identifiers
-- **[storage](docs/storage.md)** - Cloud Storage bucket names
-- **[vertexai](docs/vertexai.md)** - Vertex AI model and endpoint names
-- **[resource](docs/resource.md)** - Full resource path validation
-
-See [complete documentation](docs/README.md) for detailed validation rules and examples.
+Fill list of validators documented at https://gcpvalidate.unitvectorylabs.com/validators/
 
 ## Design Principles
 
@@ -68,7 +56,7 @@ See [complete documentation](docs/README.md) for detailed validation rules and e
 
 ### API Design
 
-All validators return `bool`:
+All validators return simple `bool`:
 
 ```go
 if !storage.IsValidBucketName(name) {
@@ -90,4 +78,4 @@ No error messages means:
 
 ## Disclaimer
 
-Not affiliated with Google. Validates format based on publicly documented conventions. Google may change naming rules—this library reflects conventions at time of release.
+Not affiliated with Google. Validates format based on publicly documented conventions. Google may change the input validation rules causing this library to become outdated and incorrect. Use at your own risk.
