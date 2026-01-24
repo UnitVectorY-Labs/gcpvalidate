@@ -1,7 +1,7 @@
 title: gcpvalidate
 description: "Client-side validation of Google Cloud resource identifiers and attributes for Go applications, based on documented conventions (not affiliated with Google)."
 
-remote_theme: just-the-docs/just-the-docs@v0.10.1
+remote_theme: just-the-docs/just-the-docs@v0.12.0
 plugins:
   - jekyll-remote-theme
 
