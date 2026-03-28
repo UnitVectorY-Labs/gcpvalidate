@@ -1,0 +1,11 @@
+name: gcpvalidate
+default_branch: main
+config:
+  description: "Client-side syntactic validation for Google Cloud resource identifiers in Go."
+  license: MIT
+  language: go
+  release: build-go
+  justfile: true
+  docs:
+    enabled: true
+    domain: gcpvalidate.unitvectorylabs.com
