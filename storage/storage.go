@@ -48,8 +48,8 @@ func IsValidBucketName(name string) bool {
 			return false
 		}
 		// Check each dot-separated component is <= 63 characters
-		parts := strings.Split(name, ".")
-		for _, part := range parts {
+		parts := strings.SplitSeq(name, ".")
+		for part := range parts {
 			if len(part) > 63 {
 				return false
 			}
