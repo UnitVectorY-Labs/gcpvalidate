@@ -1,6 +1,7 @@
 name: gcpvalidate
 default_branch: main
 config:
+  osv: sarif
   description: "Client-side syntactic validation for Google Cloud resource identifiers in Go."
   license: MIT
   language: go
