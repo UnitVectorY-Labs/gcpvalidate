@@ -8,6 +8,7 @@ config:
   release: build-go
   justfile: true
   status: active
+  release_github: true
   docs:
     enabled: true
     domain: gcpvalidate.unitvectorylabs.com
