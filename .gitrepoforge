@@ -7,6 +7,7 @@ config:
   language: go
   release: build-go
   justfile: true
+  status: active
   docs:
     enabled: true
     domain: gcpvalidate.unitvectorylabs.com
